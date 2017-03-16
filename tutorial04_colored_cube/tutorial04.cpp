@@ -6,7 +6,7 @@
 #include <GL/glew.h>
 
 // Include GLFW
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
 GLFWwindow* window;
 
 // Include GLM
@@ -14,7 +14,7 @@ GLFWwindow* window;
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-#include <common/shader.hpp>
+#include "../common/shader.hpp"
 
 int main( void )
 {
@@ -75,17 +75,17 @@ int main( void )
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 	// Camera matrix
-	glm::mat4 View       = glm::lookAt(
-								glm::vec3(4,3,-3), // Camera is at (4,3,-3), in World Space
-								glm::vec3(0,0,0), // and looks at the origin
-								glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
-						   );
+	glm::mat4 View = glm::lookAt(
+				     glm::vec3(4,3,-3), // Camera is at (4,3,-3), in World Space
+				     glm::vec3(0,0,0), // and looks at the origin
+				     glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
+				     );
 	// Model matrix : an identity matrix (model will be at the origin)
 	glm::mat4 Model      = glm::mat4(1.0f);
 	// Our ModelViewProjection : multiplication of our 3 matrices
 	glm::mat4 MVP        = Projection * View * Model; // Remember, matrix multiplication is the other way around
 
-	// Our vertices. Tree consecutive floats give a 3D vertex; Three consecutive vertices give a triangle.
+	// Our vertices. Three consecutive floats give a 3D vertex; Three consecutive vertices give a triangle.
 	// A cube has 6 faces with 2 triangles each, so this makes 6*2=12 triangles, and 12*3 vertices
 	static const GLfloat g_vertex_buffer_data[] = { 
 		-1.0f,-1.0f,-1.0f,
@@ -123,7 +123,11 @@ int main( void )
 		-1.0f, 1.0f, 1.0f,
 		 1.0f, 1.0f, 1.0f,
 		-1.0f, 1.0f, 1.0f,
-		 1.0f,-1.0f, 1.0f
+		 1.0f,-1.0f, 1.0f,
+		 
+		-2.0f,0.0f,0.0f,
+		-4.0f,0.0f,0.0f,
+		-3.0f,3.5f,0.0f
 	};
 
 	// One color for each vertex. They were generated randomly.
@@ -163,7 +167,11 @@ int main( void )
 		0.393f,  0.621f,  0.362f,
 		0.673f,  0.211f,  0.457f,
 		0.820f,  0.883f,  0.371f,
-		0.982f,  0.099f,  0.879f
+		0.982f,  0.099f,  0.879f,
+
+		0.456f,  0.234f,  0.385f,
+		0.333f,  0.285f,  0.991f,
+		0.557f,  0.198f,  0.770f
 	};
 
 	GLuint vertexbuffer;
@@ -214,6 +222,7 @@ int main( void )
 
 		// Draw the triangle !
 		glDrawArrays(GL_TRIANGLES, 0, 12*3); // 12*3 indices starting at 0 -> 12 triangles
+		glDrawArrays(GL_TRIANGLES, 12*3, 12*3+3);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
